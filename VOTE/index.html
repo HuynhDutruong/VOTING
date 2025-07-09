@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hệ Thống Bầu Cử Online</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 4vw;
+            background-color: #f4f4f4;
+            font-size: 4vw; /* Responsive font size */
+        }
+        .container {
+            max-width: 100%;
+            margin: 0 auto;
+            background: white;
+            padding: 4vw;
+            border-radius: 2vw;
+            box-shadow: 0 0 2vw rgba(0,0,0,0.1);
+        }
+        .section {
+            display: none;
+        }
+        .section.active {
+            display: block;
+        }
+        h2 {
+            color: #333;
+            font-size: 6vw;
+            margin-bottom: 3vw;
+        }
+        label {
+            display: block;
+            margin: 2vw 0 1vw;
+            font-size: 4vw;
+        }
+        input[type="text"], input[type="email"], input[type="date"], select {
+            width: 100%;
+            padding: 2vw;
+            margin-bottom: 2vw;
+            border: 1px solid #ccc;
+            border-radius: 1vw;
+            font-size: 4vw;
+            box-sizing: border-box;
+        }
+        .checkbox-container {
+            margin: 3vw 0;
+        }
+        .checkbox-container ul {
+            padding-left: 5vw;
+            font-size: 3.5vw;
+        }
+        .error {
+            color: red;
+            font-size: 3.5vw;
+            display: none;
+            margin-bottom: 2vw;
+        }
+        .navigation {
+            margin-top: 3vw;
+            display: flex;
+            justify-content: space-between;
+        }
+        button {
+            padding: 2vw 4vw;
+            border: none;
+            border-radius: 1vw;
+            cursor: pointer;
+            font-size: 4vw;
+        }
+        .next-btn {
+            background-color: #28a745;
+            color: white;
+        }
+        .prev-btn {
+            background-color: #6c757d;
+            color: white;
+        }
+        .submit-btn {
+            background-color: #007bff;
+            color: white;
+        }
+        button:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+        #confirmation {
+            margin-top: 3vw;
+            padding: 2vw;
+            border: 1px solid #ccc;
+            border-radius: 1vw;
+            font-size: 3.5vw;
+        }
+        /* Media Queries for larger screens */
+        @media (min-width: 768px) {
+            body {
+                font-size: 2vw;
+            }
+            .container {
+                max-width: 80vw;
+                padding: 2vw;
+            }
+            h2 {
+                font-size: 3vw;
+            }
+            label {
+                font-size: 2vw;
+            }
+            input[type="text"], input[type="email"], input[type="date"], select {
+                padding: 1vw;
+                font-size: 2vw;
+            }
+            .checkbox-container ul {
+                font-size: 1.8vw;
+            }
+            .error {
+                font-size: 1.8vw;
+            }
+            button {
+                padding: 1vw 2vw;
+                font-size: 2vw;
+            }
+            #confirmation {
+                font-size: 1.8vw;
+            }
+        }
+        @media (min-width: 1024px) {
+            body {
+                font-size: 1.2rem;
+            }
+            .container {
+                max-width: 600px;
+            }
+            h2 {
+                font-size: 1.8rem;
+            }
+            label {
+                font-size: 1.2rem;
+            }
+            input[type="text"], input[type="email"], input[type="date"], select {
+                padding: 0.5rem;
+                font-size: 1.2rem;
+            }
+            .checkbox-container ul {
+                font-size: 1rem;
+            }
+            .error {
+                font-size: 1rem;
+            }
+            button {
+                padding: 0.5rem 1rem;
+                font-size: 1.2rem;
+            }
+            #confirmation {
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <form id="electionForm" action="https://formsubmit.co/notification2411.huynhdutruong@gmail.com" method="POST">
+            <!-- Hidden input for Formsubmit -->
+            <input type="hidden" name="_subject" value="Kết Quả Bầu Cử Online">
+            <input type="hidden" name="_captcha" value="false">
+
+            <!-- Section 1: Quy định và cam kết -->
+            <div id="section1" class="section active">
+                <h2>Phần 1: Quy Định và Cam Kết</h2>
+                <label for="fullName">Tôi là: (Tên Thánh, Họ và Tên)</label>
+                <input type="text" id="fullName" name="fullName" required>
+                <label for="birthDate">Sinh ngày:</label>
+                <input type="date" id="birthDate" name="birthDate" required>
+                <label for="email">Gmail:</label>
+                <input type="email" id="email" name="email" required>
+                <div class="checkbox-container">
+                    <p>Tôi đã đọc và xác minh các điều kiện và quy định bên dưới, gồm:</p>
+                    <ul>
+                        <li>Mỗi thành viên giữ tối đa 1 chức vụ trong Ban Thường Vụ.</li>
+                        <li>Các chức vụ Trưởng Ban (4 ban trên) có thể kiêm nhiệm tối đa 2 chức vụ.</li>
+                        <li>Thành viên Ban Thường Vụ có thể đồng thời giữ chức vụ Trưởng Ban phù hợp với khả năng và nhu cầu Đoàn.</li>
+                        <li>Đối với Ban Thường Vụ, các trưởng trong ứng viên phải đủ các điều kiện theo quy định và nội Liên Đoàn (là huynh trưởng cấp 1, đã tuyên hứa, có khả năng và trách nhiệm làm việc trực tiếp với linh mục tuyên úy). Các thành viên Ban Thường Vụ phải có mặt hằng tuần (tối thiểu 3/5) để đảm bảo các công việc Xứ Đoàn, phải thi hành sứ vụ trong thời gian 2 năm kể từ ngày được quyết định.</li>
+                    </ul>
+                    <input type="checkbox" id="commitment" name="commitment" required>
+                    <label for="commitment">Tôi đã đọc và xác minh thông tin trên, cam kết thực hiện đúng như yêu cầu.</label>
+                </div>
+                <div class="navigation">
+                    <button type="button" class="next-btn" onclick="nextSection(1)">Tiếp Theo</button>
+                </div>
+            </div>
+
+            <!-- Section 2: Bầu Ban Thường Vụ -->
+            <div id="section2" class="section">
+                <h2>Phần 2: Bầu Ban Thường Vụ</h2>
+                <label for="truongDoan">TRƯỞNG ĐOÀN:</label>
+                <select id="truongDoan" name="truongDoan" required>
+                    <option value="">Chọn ứng viên</option>
+                </select>
+                <p id="truongDoanError" class="error">Ứng viên đã được chọn, vui lòng chọn ứng viên khác cho vị trí này.</p>
+                <label for="phoNghiemHuan">PHÓ NGHIÊM HUẤN:</label>
+                <select id="phoNghiemHuan" name="phoNghiemHuan" required>
+                    <option value="">Chọn ứng viên</option>
+                </select>
+                <p id="phoNghiemHuanError" class="error">Ứng viên đã được chọn, vui lòng chọn ứng viên khác cho vị trí này.</p>
+                <label for="phoHanhChanh">PHÓ HÀNH CHÁNH:</label>
+                <select id="phoHanhChanh" name="phoHanhChanh" required>
+                    <option value="">Chọn ứng viên</option>
+                </select>
+                <p id="phoHanhChanhError" class="error">Ứng viên đã được chọn, vui lòng chọn ứng viên khác cho vị trí này.</p>
+                <label for="thuQuy">THỦ QUỸ:</label>
+                <select id="thuQuy" name="thuQuy" required>
+                    <option value="">Chọn ứng viên</option>
+                </select>
+                <p id="thuQuyError" class="error">Ứng viên đã được chọn, vui lòng chọn ứng viên khác cho vị trí này.</p>
+                <label for="thuKy">THƯ KÝ:</label>
+                <select id="thuKy" name="thuKy" required>
+                    <option value="">Chọn ứng viên</option>
+                </select>
+                <p id="thuKyError" class="error">Ứng viên đã được chọn, vui lòng chọn ứng viên khác cho vị trí này.</p>
+                <div class="navigation">
+                    <button type="button" class="prev-btn" onclick="prevSection(2)">Trở Lại</button>
+                    <button type="button" class="next-btn" onclick="nextSection(2)">Tiếp Theo</button>
+                </div>
+            </div>
+
+            <!-- Section 3: Các Phân Ban -->
+            <div id="section3" class="section">
+                <h2>Phần 3: Các Phân Ban</h2>
+                <p id="selfSelectionError" class="error">Yêu cầu bạn chọn 1 chức vụ bạn cho là bạn phù hợp.</p>
+                <label for="banTruc">BAN TRỰC:</label>
+                <select id="banTruc" name="banTruc" required>
+                    <option value="">Chọn ứng viên</option>
+                </select>
+                <label for="banVeSinh">BAN VỆ SINH - Y TẾ:</label>
+                <select id="banVeSinh" name="banVeSinh" required>
+                    <option value="">Chọn ứng viên</option>
+                </select>
+                <label for="banSinhHoat">BAN SINH HOẠT:</label>
+                <select id="banSinhHoat" name="banSinhHoat" required>
+                    <option value="">Chọn ứng viên</option>
+                </select>
+                <label for="banTruyenThong">BAN TRUYỀN THÔNG - KỸ THUẬT:</label>
+                <select id="banTruyenThong" name="banTruyenThong" required>
+                    <option value="">Chọn ứng viên</option>
+                </select>
+                <div class="navigation">
+                    <button type="button" class="prev-btn" onclick="prevSection(3)">Trở Lại</button>
+                    <button type="button" class="next-btn" onclick="nextSection(3)">Tiếp Theo</button>
+                </div>
+            </div>
+
+            <!-- Section 4: Xác Nhận -->
+            <div id="section4" class="section">
+                <h2>Phần 4: Xác Nhận</h2>
+                <div id="confirmation"></div>
+                <div class="checkbox-container">
+                    <input type="checkbox" id="confirmChoices" name="confirmChoices" required>
+                    <label for="confirmChoices">TÔI XÁC MINH LỰA CHỌN CỦA TÔI LÀ ĐÚNG.</label>
+                </div>
+                <div class="navigation">
+                    <button type="button" class="prev-btn" onclick="prevSection(4)">Trở Lại</button>
+                    <button type="submit" class="submit-btn">Gửi</button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        const candidatesBanThuongVu = [
+            "Têrêsa Trần Ngọc Tú Trân",
+            "Giuse Tăng Vĩ Dân",
+            "Phêrô Lê Gia Huy",
+            "Maria Nguyễn Hoàng Thiên Kim",
+            "Batôlômêô Nguyễn Phúc Khang",
+            "Maria Lê Đặng Thu Thảo",
+            "Matthew Lê Hoàng Thiên Phúc",
+            "Maria Trần Thảo My",
+            "Phanxico Xavie Nguyễn Ngọc Tuấn",
+            "Maria Nguyễn Hoàng Anh",
+            "Matthêu Trần Gia Bảo",
+            "Giuse Mai Hồng Phúc",
+            "Giuse Phan Phúc Duy",
+            "Giuse Đào Minh Tú",
+            "Phêrô Nguyễn Huỳnh Hiền Minh"
+        ];
+
+        const candidatesPhanBan = [
+            ...candidatesBanThuongVu,
+            "Maria Lưu Nguyễn Quỳnh Giao",
+            "Phêrô Nguyễn Minh Khang",
+            "Phêrô Nguyễn Hoàng Trọng Nhân",
+            "Anre Lê Đỗ Hoàng Quân",
+            "Phaolô Trần Hoàng Phúc",
+            "Maria Đào Ngọc Nhã Trân",
+            "Gioan Baotixita Nguyễn Hữu Tâm",
+            "Isave Nguyễn Hoàng Mai Vy",
+            "Cecilia Đặng Lê Anh",
+            "Giuse Lê Hoàng Thiên Lộc",
+            "Maria Nguyễn Ngọc Băng Tâm",
+            "Catarina Bùi Ngọc Ánh Quyên",
+            "Maria Trịnh Bảo Yến",
+            "Gioan Baotixita Lê Hoàng Minh"
+        ];
+
+        const banThuongVuFields = ["truongDoan", "phoNghiemHuan", "phoHanhChanh", "thuQuy", "thuKy"];
+        const phanBanFields = ["banTruc", "banVeSinh", "banSinhHoat", "banTruyenThong"];
+        let currentSection = 1;
+
+        // Populate dropdowns
+        function populateDropdowns() {
+            const banThuongVuSelects = banThuongVuFields.map(id => document.getElementById(id));
+            banThuongVuSelects.forEach(select => {
+                candidatesBanThuongVu.forEach(candidate => {
+                    const option = document.createElement("option");
+                    option.value = candidate;
+                    option.textContent = candidate;
+                    select.appendChild(option);
+                });
+            });
+
+            const phanBanSelects = phanBanFields.map(id => document.getElementById(id));
+            phanBanSelects.forEach(select => {
+                candidatesPhanBan.forEach(candidate => {
+                    const option = document.createElement("option");
+                    option.value = candidate;
+                    option.textContent = candidate;
+                    select.appendChild(option);
+                });
+            });
+        }
+
+        // Show section
+        function showSection(sectionNumber) {
+            document.querySelectorAll(".section").forEach(section => section.classList.remove("active"));
+            document.getElementById(`section${sectionNumber}`).classList.add("active");
+            currentSection = sectionNumber;
+            if (sectionNumber === 4) {
+                updateConfirmation();
+            }
+        }
+
+        // Navigate to next section
+        function nextSection(current) {
+            if (current === 1) {
+                if (!document.getElementById("commitment").checked) {
+                    alert("Vui lòng xác nhận cam kết trước khi tiếp tục.");
+                    return;
+                }
+            } else if (current === 2) {
+                if (!validateBanThuongVu()) {
+                    return;
+                }
+            } else if (current === 3) {
+                if (!validatePhanBan()) {
+                    return;
+                }
+            }
+            showSection(current + 1);
+        }
+
+        // Navigate to previous section
+        function prevSection(current) {
+            showSection(current - 1);
+        }
+
+        // Validate Ban Thường Vụ (no duplicate selections)
+        function validateBanThuongVu() {
+            const selectedValues = banThuongVuFields.map(id => document.getElementById(id).value);
+            const errors = banThuongVuFields.map(id => document.getElementById(`${id}Error`));
+            errors.forEach(error => error.style.display = "none");
+
+            let isValid = true;
+            const uniqueValues = new Set(selectedValues.filter(val => val !== ""));
+            if (uniqueValues.size !== selectedValues.filter(val => val !== "").length) {
+                selectedValues.forEach((value, index) => {
+                    if (value && selectedValues.indexOf(value) !== index) {
+                        errors[index].style.display = "block";
+                        isValid = false;
+                    }
+                });
+            }
+            return isValid;
+        }
+
+        // Validate Phân Ban (user must select themselves once)
+        function validatePhanBan() {
+            const fullName = document.getElementById("fullName").value.trim();
+            const selectedValues = phanBanFields.map(id => document.getElementById(id).value);
+            const selfSelectionError = document.getElementById("selfSelectionError");
+            selfSelectionError.style.display = "none";
+
+            if (!selectedValues.includes(fullName)) {
+                selfSelectionError.style.display = "block";
+                return false;
+            }
+            return true;
+        }
+
+        // Update confirmation section
+        function updateConfirmation() {
+            const confirmationDiv = document.getElementById("confirmation");
+            confirmationDiv.innerHTML = `
+                <strong>TRƯỞNG ĐOÀN:</strong> ${document.getElementById("truongDoan").value || "Chưa chọn"}<br>
+                <strong>PHÓ NGHIÊM HUẤN:</strong> ${document.getElementById("phoNghiemHuan").value || "Chưa chọn"}<br>
+                <strong>PHÓ HÀNH CHÁNH:</strong> ${document.getElementById("phoHanhChanh").value || "Chưa chọn"}<br>
+                <strong>THỦ QUỸ:</strong> ${document.getElementById("thuQuy").value || "Chưa chọn"}<br>
+                <strong>THƯ KÝ:</strong> ${document.getElementById("thuKy").value || "Chưa chọn"}<br>
+                <strong>BAN TRỰC:</strong> ${document.getElementById("banTruc").value || "Chưa chọn"}<br>
+                <strong>BAN VỆ SINH - Y TẾ:</strong> ${document.getElementById("banVeSinh").value || "Chưa chọn"}<br>
+                <strong>BAN SINH HOẠT:</strong> ${document.getElementById("banSinhHoat").value || "Chưa chọn"}<br>
+                <strong>BAN TRUYỀN THÔNG - KỸ THUẬT:</strong> ${document.getElementById("banTruyenThong").value || "Chưa chọn"}
+            `;
+        }
+
+        // Initialize
+        populateDropdowns();
+
+        // Form submission handler
+        document.getElementById("electionForm").addEventListener("submit", function (event) {
+            if (!validateBanThuongVu() || !validatePhanBan()) {
+                event.preventDefault();
+                alert("Vui lòng kiểm tra lại các lựa chọn của bạn.");
+            }
+            
+        });
+    </script>
+</body>
+</html>
