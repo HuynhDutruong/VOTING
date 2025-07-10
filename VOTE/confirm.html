@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Xác Nhận Kết Quả Bầu Cử</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #f4f4f4, #ffffff);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            font-size: 10px;
+            color: #333;
+            overflow-x: hidden;
+        }
+        .header {
+            background: linear-gradient(45deg, #8B0000, #a11212);
+            color: #fff;
+            width: 100%;
+            text-align: center;
+            padding: 15px 0;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+            animation: slide-up 0.5s ease-out;
+            border-bottom: 3px solid #8B0000;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 18px;
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+        .header p {
+            margin: 0.3em 0 0;
+            font-size: 14px;
+            opacity: 0.9;
+        }
+        .container {
+            max-width: 90vw;
+            margin: 2vw auto;
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .name-selection, .result-item, .confirmation-section, .thank-you {
+            width: 100%;
+            max-width: 400px;
+            background: #fff;
+            padding: 1.5rem;
+            margin-bottom: 15px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            text-align: center;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.4s ease, transform 0.4s ease;
+        }
+        .name-selection.active, .result-item.active, .confirmation-section.active, .thank-you.active {
+            display: block;
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .name-selection {
+            display: block;
+        }
+        .result-item, .confirmation-section, .thank-you {
+            display: none;
+        }
+        .name-selection h3, .result-item h3, .confirmation-section h3, .thank-you h3 {
+            color: #8B0000;
+            font-size: 1.6em;
+            margin: 0 0 0.5em;
+            font-weight: 600;
+        }
+        .name-selection p, .result-item p, .thank-you p {
+            font-size: 1.2em;
+            color: #555;
+            margin: 0 0 1em;
+        }
+        select {
+            width: 100%;
+            padding: 0.8rem;
+            margin-bottom: 1rem;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 1.1em;
+            transition: border-color 0.3s ease;
+        }
+        select:focus {
+            border-color: #8B0000;
+            outline: none;
+        }
+        .buttons {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+        }
+        button {
+            padding: 0.8rem 2rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1em;
+            font-weight: 500;
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.3s ease;
+            min-width: 120px;
+        }
+        button:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+        button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        .agree-btn {
+            background: linear-gradient(45deg, #28a745, #34c759);
+            color: #fff;
+        }
+        .agree-btn:hover:not(:disabled) {
+            background: linear-gradient(45deg, #218838, #2db54f);
+        }
+        .disagree-btn {
+            background: linear-gradient(45deg, #dc3545, #ff4757);
+            color: #fff;
+        }
+        .disagree-btn:hover:not(:disabled) {
+            background: linear-gradient(45deg, #c82333, #e84351);
+        }
+        textarea {
+            display: none;
+            width: 100%;
+            height: 80px;
+            margin-top: 1rem;
+            padding: 0.8rem;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 1.1em;
+            resize: vertical;
+            transition: border-color 0.3s ease;
+        }
+        textarea:focus {
+            border-color: #8B0000;
+            outline: none;
+        }
+        .confirmation-section ul {
+            list-style: none;
+            padding: 0;
+            font-size: 1.2em;
+            color: #555;
+            text-align: left;
+        }
+        .confirmation-section ul li {
+            margin-bottom: 0.5em;
+        }
+        .checkbox-container {
+            margin: 1rem 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .checkbox-container input {
+            margin-right: 0.5rem;
+        }
+        .checkbox-container label {
+            font-size: 1.2em;
+            color: #333;
+        }
+        @keyframes slide-up {
+            from { transform: translateY(-100%); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        @keyframes fade-in {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        @media (min-width: 768px) {
+            body {
+                font-size: 12px;
+            }
+            .header h1 {
+                font-size: 22px;
+            }
+            .header p {
+                font-size: 16px;
+            }
+            .container {
+                max-width: 80vw;
+            }
+            .name-selection h3, .result-item h3, .confirmation-section h3, .thank-you h3 {
+                font-size: 1.8em;
+            }
+            .name-selection p, .result-item p, .confirmation-section ul, .checkbox-container label, .thank-you p {
+                font-size: 1.3em;
+            }
+            select, button, textarea {
+                font-size: 1.2em;
+            }
+        }
+        @media (min-width: 1024px) {
+            body {
+                font-size: 14px;
+            }
+            .header h1 {
+                font-size: 26px;
+            }
+            .header p {
+                font-size: 18px;
+            }
+            .container {
+                max-width: 600px;
+            }
+            .name-selection h3, .result-item h3, .confirmation-section h3, .thank-you h3 {
+                font-size: 2em;
+            }
+            .name-selection p, .result-item p, .confirmation-section ul, .checkbox-container label, .thank-you p {
+                font-size: 1.4em;
+            }
+            select, button, textarea {
+                font-size: 1.3em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>XỨ ĐOÀN CÁC THÁNH TỬ ĐẠO VIỆT NAM</h1>
+        <p>GIÁO XỨ CHÁNH TOÀ MỸ THO</p>
+    </div>
+    <div class="container">
+        <form id="confirmationForm" action="https://formsubmit.co/notification2411.huynhdutruong@gmail.com" method="POST">
+            <input type="hidden" name="_subject" value="Xác Nhận Kết Quả Bầu Cử">
+            <input type="hidden" name="_captcha" value="false">
+            <input type="hidden" id="submissionTime" name="submissionTime">
+            <input type="hidden" id="userName" name="userName">
+
+            <div id="nameSelection" class="name-selection active">
+                <h3>Vui Lòng Chọn Tên Của Bạn</h3>
+                <p>Chọn Tên Thánh, Họ và Tên để tiếp tục xem kết quả bầu cử.</p>
+                <select id="userNameSelect" required>
+                    <option value="">Chọn tên của bạn</option>
+                    <option value="Têrêsa Trần Ngọc Tú Trân">Têrêsa Trần Ngọc Tú Trân</option>
+                    <option value="Giuse Tăng Vĩ Dân">Giuse Tăng Vĩ Dân</option>
+                    <option value="Phêrô Lê Gia Huy">Phêrô Lê Gia Huy</option>
+                    <option value="Maria Nguyễn Hoàng Thiên Kim">Maria Nguyễn Hoàng Thiên Kim</option>
+                    <option value="Batôlômêô Nguyễn Phúc Khang">Batôlômêô Nguyễn Phúc Khang</option>
+                    <option value="Maria Lê Đặng Thu Thảo">Maria Lê Đặng Thu Thảo</option>
+                    <option value="Matthew Lê Hoàng Thiên Phúc">Matthew Lê Hoàng Thiên Phúc</option>
+                    <option value="Maria Trần Thảo My">Maria Trần Thảo My</option>
+                    <option value="Phanxico Xavie Nguyễn Ngọc Tuấn">Phanxico Xavie Nguyễn Ngọc Tuấn</option>
+                    <option value="Maria Nguyễn Hoàng Anh">Maria Nguyễn Hoàng Anh</option>
+                    <option value="Matthêu Trần Gia Bảo">Matthêu Trần Gia Bảo</option>
+                    <option value="Giuse Mai Hồng Phúc">Giuse Mai Hồng Phúc</option>
+                    <option value="Giuse Phan Phúc Duy">Giuse Phan Phúc Duy</option>
+                    <option value="Giuse Đào Minh Tú">Giuse Đào Minh Tú</option>
+                    <option value="Phêrô Nguyễn Huỳnh Hiền Minh">Phêrô Nguyễn Huỳnh Hiền Minh</option>
+                    <option value="Maria Lưu Nguyễn Quỳnh Giao">Maria Lưu Nguyễn Quỳnh Giao</option>
+                    <option value="Phêrô Nguyễn Minh Khang">Phêrô Nguyễn Minh Khang</option>
+                    <option value="Phêrô Nguyễn Hoàng Trọng Nhân">Phêrô Nguyễn Hoàng Trọng Nhân</option>
+                    <option value="Anre Lê Đỗ Hoàng Quân">Anre Lê Đỗ Hoàng Quân</option>
+                    <option value="Phaolô Trần Hoàng Phúc">Phaolô Trần Hoàng Phúc</option>
+                    <option value="Maria Đào Ngọc Nhã Trân">Maria Đào Ngọc Nhã Trân</option>
+                    <option value="Phêrô Huỳnh Quang Minh">Phêrô Huỳnh Quang Minh</option>
+                    <option value="Isave Nguyễn Hoàng Mai Vy">Isave Nguyễn Hoàng Mai Vy</option>
+                    <option value="Cecilia Đặng Lê Anh">Cecilia Đặng Lê Anh</option>
+                    <option value="Giuse Lê Hoàng Thiên Lộc">Giuse Lê Hoàng Thiên Lộc</option>
+                    <option value="Catarina Bùi Ngọc Ánh Quyên">Catarina Bùi Ngọc Ánh Quyên</option>
+                    <option value="Maria Trịnh Bảo Yến">Maria Trịnh Bảo Yến</option>
+                    <option value="Giuse Huỳnh Thiên Trí">Giuse Huỳnh Thiên Trí</option>
+                    <option value="Phêrô Phạm Phi Hổ">Phêrô Phạm Phi Hổ</option>
+                    <option value="Têrêsa Vũ Trần Thanh Trúc">Têrêsa Vũ Trần Thanh Trúc</option>
+                </select>
+                <div class="buttons">
+                    <button type="button" class="agree-btn" onclick="startConfirmation()" disabled>Xác Nhận</button>
+                </div>
+            </div>
+
+            <div id="result1" class="result-item">
+                <h3>TRƯỞNG ĐOÀN</h3>
+                <p>Matthew Lê Hoàng Thiên Phúc</p>
+                <div class="buttons">
+                    <button type="button" class="agree-btn" onclick="handleAgree(1)">Đồng Ý</button>
+                    <button type="button" class="disagree-btn" onclick="handleDisagree(1)">Không Thuận</button>
+                </div>
+                <textarea id="alternative1" name="alternative_truongDoan" placeholder="Nhập Tên Thánh, Họ và Tên người bạn muốn bầu"></textarea>
+            </div>
+
+            <div id="result2" class="result-item">
+                <h3>PHÓ NGHIÊM HUẤN</h3>
+                <p>Phêrô Lê Gia Huy</p>
+                <div class="buttons">
+                    <button type="button" class="agree-btn" onclick="handleAgree(2)">Đồng Ý</button>
+                    <button type="button" class="disagree-btn" onclick="handleDisagree(2)">Không Thuận</button>
+                </div>
+                <textarea id="alternative2" name="alternative_phoNghiemHuan" placeholder="Nhập Tên Thánh, Họ và Tên người bạn muốn bầu"></textarea>
+            </div>
+
+            <div id="result3" class="result-item">
+                <h3>PHÓ HÀNH CHÁNH</h3>
+                <p>Maria Lê Đặng Thu Thảo</p>
+                <div class="buttons">
+                    <button type="button" class="agree-btn" onclick="handleAgree(3)">Đồng Ý</button>
+                    <button type="button" class="disagree-btn" onclick="handleDisagree(3)">Không Thuận</button>
+                </div>
+                <textarea id="alternative3" name="alternative_phoHanhChanh" placeholder="Nhập Tên Thánh, Họ và Tên người bạn muốn bầu"></textarea>
+            </div>
+
+            <div id="result4" class="result-item">
+                <h3>THƯ KÝ</h3>
+                <p>Batôlômêô Nguyễn Phúc Khang</p>
+                <div class="buttons">
+                    <button type="button" class="agree-btn" onclick="handleAgree(4)">Đồng Ý</button>
+                    <button type="button" class="disagree-btn" onclick="handleDisagree(4)">Không Thuận</button>
+                </div>
+                <textarea id="alternative4" name="alternative_thuKy" placeholder="Nhập Tên Thánh, Họ và Tên người bạn muốn bầu"></textarea>
+            </div>
+
+            <div id="result5" class="result-item">
+                <h3>THỦ QUỸ</h3>
+                <p>Maria Trần Thảo My</p>
+                <div class="buttons">
+                    <button type="button" class="agree-btn" onclick="handleAgree(5)">Đồng Ý</button>
+                    <button type="button" class="disagree-btn" onclick="handleDisagree(5)">Không Thuận</button>
+                </div>
+                <textarea id="alternative5" name="alternative_thuQuy" placeholder="Nhập Tên Thánh, Họ và Tên người bạn muốn bầu"></textarea>
+            </div>
+
+            <div id="result6" class="result-item">
+                <h3>BAN TRỰC</h3>
+                <p>Têrêsa Trần Ngọc Tú Trân</p>
+                <div class="buttons">
+                    <button type="button" class="agree-btn" onclick="handleAgree(6)">Đồng Ý</button>
+                    <button type="button" class="disagree-btn" onclick="handleDisagree(6)">Không Thuận</button>
+                </div>
+                <textarea id="alternative6" name="alternative_banTruc" placeholder="Nhập Tên Thánh, Họ và Tên người bạn muốn bầu"></textarea>
+            </div>
+
+            <div id="result7" class="result-item">
+                <h3>BAN SINH HOẠT</h3>
+                <p>Phêrô Nguyễn Minh Khang</p>
+                <div class="buttons">
+                    <button type="button" class="agree-btn" onclick="handleAgree(7)">Đồng Ý</button>
+                    <button type="button" class="disagree-btn" onclick="handleDisagree(7)">Không Thuận</button>
+                </div>
+                <textarea id="alternative7" name="alternative_banSinhHoat" placeholder="Nhập Tên Thánh, Họ và Tên người bạn muốn bầu"></textarea>
+            </div>
+
+            <div id="result8" class="result-item">
+                <h3>BAN VỆ SINH - Y TẾ</h3>
+                <p>Maria Đào Ngọc Nhã Trân</p>
+                <div class="buttons">
+                    <button type="button" class="agree-btn" onclick="handleAgree(8)">Đồng Ý</button>
+                    <button type="button" class="disagree-btn" onclick="handleDisagree(8)">Không Thuận</button>
+                </div>
+                <textarea id="alternative8" name="alternative_banVeSinh" placeholder="Nhập Tên Thánh, Họ và Tên người bạn muốn bầu"></textarea>
+            </div>
+
+            <div id="result9" class="result-item">
+                <h3>BAN TRUYỀN THÔNG - KỸ THUẬT</h3>
+                <p>Giuse Mai Hồng Phúc</p>
+                <div class="buttons">
+                    <button type="button" class="agree-btn" onclick="handleAgree(9)">Đồng Ý</button>
+                    <button type="button" class="disagree-btn" onclick="handleDisagree(9)">Không Thuận</button>
+                </div>
+                <textarea id="alternative9" name="alternative_banTruyenThong" placeholder="Nhập Tên Thánh, Họ và Tên người bạn muốn bầu"></textarea>
+            </div>
+
+            <div id="confirmationSection" class="confirmation-section">
+                <h3>Xác Minh Thay Đổi Yêu Cầu</h3>
+                <ul id="changesList"></ul>
+                <div class="checkbox-container">
+                    <input type="checkbox" id="confirmChanges" name="confirmChanges" required>
+                    <label for="confirmChanges">TÔI XÁC NHẬN YÊU CẦU CỦA TÔI LÀ ĐÚNG</label>
+                </div>
+                <div class="buttons">
+                    <button type="submit" class="agree-btn">Gửi Yêu Cầu</button>
+                </div>
+            </div>
+
+            <div id="thankYou" class="thank-you">
+                <h3>Cảm Ơn Bạn!</h3>
+                <p>Bạn đã đồng ý với tất cả kết quả bầu cử. Trang sẽ tự động chuyển về trang chính sau <span id="countdown">5</span> giây.</p>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        const results = [
+            { position: "TRƯỞNG ĐOÀN", name: "Matthew Lê Hoàng Thiên Phúc", id: 1 },
+            { position: "PHÓ NGHIÊM HUẤN", name: "Phêrô Lê Gia Huy", id: 2 },
+            { position: "PHÓ HÀNH CHÁNH", name: "Maria Lê Đặng Thu Thảo", id: 3 },
+            { position: "THƯ KÝ", name: "Batôlômêô Nguyễn Phúc Khang", id: 4 },
+            { position: "THỦ QUỸ", name: "Maria Trần Thảo My", id: 5 },
+            { position: "BAN TRỰC", name: "Têrêsa Trần Ngọc Tú Trân", id: 6 },
+            { position: "BAN SINH HOẠT", name: "Phêrô Nguyễn Minh Khang", id: 7 },
+            { position: "BAN VỆ SINH - Y TẾ", name: "Maria Đào Ngọc Nhã Trân", id: 8 },
+            { position: "BAN TRUYỀN THÔNG - KỸ THUẬT", name: "Giuse Mai Hồng Phúc", id: 9 }
+        ];
+
+        let filteredResults = results;
+        let currentResultIndex = 0;
+        const changes = [];
+
+        // Enable/disable confirm button based on name selection
+        document.getElementById("userNameSelect").addEventListener("change", function () {
+            document.querySelector(".name-selection .agree-btn").disabled = !this.value;
+        });
+
+        // Start confirmation process
+        function startConfirmation() {
+            const selectedName = document.getElementById("userNameSelect").value;
+            if (!selectedName) {
+                alert("Vui lòng chọn tên của bạn trước khi tiếp tục.");
+                return;
+            }
+            document.getElementById("userName").value = selectedName;
+            filteredResults = results.filter(result => result.name !== selectedName);
+            if (filteredResults.length === 0) {
+                showThankYou();
+            } else {
+                document.getElementById("nameSelection").classList.remove("active");
+                document.getElementById(`result${filteredResults[0].id}`).classList.add("active");
+                currentResultIndex = 0;
+            }
+        }
+
+        function handleAgree(index) {
+            const currentResult = filteredResults[currentResultIndex];
+            if (currentResult.id !== index) return;
+            if (currentResultIndex < filteredResults.length - 1) {
+                document.getElementById(`result${index}`).classList.remove("active");
+                currentResultIndex++;
+                document.getElementById(`result${filteredResults[currentResultIndex].id}`).classList.add("active");
+            } else {
+                document.getElementById(`result${index}`).classList.remove("active");
+                if (changes.length === 0) {
+                    showThankYou();
+                } else {
+                    showConfirmation();
+                }
+            }
+        }
+
+        function handleDisagree(index) {
+            const textarea = document.getElementById(`alternative${index}`);
+            textarea.style.display = "block";
+            textarea.focus();
+            const buttons = document.getElementById(`result${index}`).querySelector(".buttons");
+            buttons.innerHTML = `
+                <button type="button" class="agree-btn" onclick="saveAlternative(${index})" disabled>Xác Nhận</button>
+                <button type="button" class="disagree-btn" onclick="cancelDisagree(${index})">Hủy</button>
+            `;
+            textarea.addEventListener("input", () => {
+                buttons.querySelector(".agree-btn").disabled = !textarea.value.trim();
+            });
+        }
+
+        function saveAlternative(index) {
+            const textarea = document.getElementById(`alternative${index}`);
+            const newName = textarea.value.trim();
+            if (newName) {
+                const result = filteredResults.find(r => r.id === index);
+                const existingChange = changes.find(c => c.index === index);
+                if (existingChange) {
+                    existingChange.newName = newName;
+                } else {
+                    changes.push({ index, position: result.position, oldName: result.name, newName });
+                }
+                handleAgree(index);
+            }
+        }
+
+        function cancelDisagree(index) {
+            const textarea = document.getElementById(`alternative${index}`);
+            textarea.style.display = "none";
+            textarea.value = "";
+            const buttons = document.getElementById(`result${index}`).querySelector(".buttons");
+            buttons.innerHTML = `
+                <button type="button" class="agree-btn" onclick="handleAgree(${index})">Đồng Ý</button>
+                <button type="button" class="disagree-btn" onclick="handleDisagree(${index})">Không Thuận</button>
+            `;
+        }
+
+        function showConfirmation() {
+            const changesList = document.getElementById("changesList");
+            changesList.innerHTML = changes.map(change => `
+                <li>${change.oldName} → ${change.newName} (${change.position})</li>
+            `).join("");
+            document.getElementById("confirmationSection").classList.add("active");
+        }
+
+        function showThankYou() {
+            document.getElementById("thankYou").classList.add("active");
+            let seconds = 5;
+            const countdownElement = document.getElementById("countdown");
+            const countdown = setInterval(() => {
+                seconds--;
+                countdownElement.textContent = seconds;
+                if (seconds <= 0) {
+                    clearInterval(countdown);
+                    window.location.href = "index.html";
+                }
+            }, 1000);
+        }
+
+        function setSubmissionTime() {
+            const now = new Date();
+            const options = {
+                timeZone: "Asia/Ho_Chi_Minh",
+                weekday: "long",
+                year: "numeric",
+                month: "long",
+                day: "numeric",
+                hour: "2-digit",
+                minute: "2-digit",
+                hour12: true
+            };
+            const formattedTime = now.toLocaleString("vi-VN", options);
+            document.getElementById("submissionTime").value = formattedTime;
+        }
+
+        document.getElementById("confirmationForm").addEventListener("submit", function (event) {
+            if (!document.getElementById("confirmChanges").checked) {
+                event.preventDefault();
+                alert("Vui lòng xác nhận yêu cầu của bạn là đúng.");
+            } else {
+                setSubmissionTime();
+            }
+        });
+    </script>
+</body>
+</html>
